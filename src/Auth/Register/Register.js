@@ -73,7 +73,7 @@ class Register extends Component {
               style={styles.imgLogo}
             />
             <Text style={{ alignSelf: 'center' }}>
-              Please Register To Your Account
+              Please Register Your Account
             </Text>
             <Item error={statusTextBox.username} inlineLabel>
               <Input

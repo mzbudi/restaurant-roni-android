@@ -1,11 +1,19 @@
 import React, { Component } from 'react';
-import { Form, Item, Input, Label, Icon } from 'native-base';
+import { Form, Item, Input } from 'native-base';
 import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import qs from 'qs';
 import { connect } from 'react-redux';
 
 class Login extends Component {
+  componentDidMount() {
+    const { auth } = this.props;
+
+    if (auth.data.length !== 0) {
+      this.props.navigation.navigate('App');
+    }
+  }
+
   state = {
     num: 0,
     username: '',
@@ -15,6 +23,11 @@ class Login extends Component {
       password: false,
       message: ''
     }
+  };
+
+  static navigationOptions = {
+    header: null,
+    headerShown: false
   };
 
   handleCount = () => {
@@ -39,7 +52,7 @@ class Login extends Component {
           this.props.navigation.navigate('App');
         }
       })
-      .catch(err => {
+      .catch(() => {
         this.setState({
           statusTextBox: {
             ...statusTextBox,
@@ -119,8 +132,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
   setDataLogin: payload => {
     dispatch({
-      type: 'POST_LOGIN_FULLFILED',
-      payload
+      type: 'POST_LOGIN_FULFILLED',
+      payload: payload
     });
   }
 });
