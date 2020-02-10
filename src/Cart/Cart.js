@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
-import { Container, Content, Drawer, Button } from 'native-base';
+import { Container, Content, Drawer, Button, Toast } from 'native-base';
 import NavbarCart from '../Components/NavbarCart';
 import SideBarCart from '../Components/SideBarCart';
 import { connect } from 'react-redux';
@@ -27,6 +27,28 @@ class Cart extends Component {
     this.setState({
       visible: false
     });
+    Toast.show({
+      text: 'Transaction Succes',
+      buttonText: 'Okay',
+      type: 'success',
+      duration: 5000
+    });
+  };
+
+  formatRupiah = (angka, prefix) => {
+    let number_string = angka.toString().replace(/[^,\d]/g, '');
+    let split = number_string.split(',');
+    let remains = split[0].length % 3;
+    let rupiah = split[0].substr(0, remains);
+    let thausand = split[0].substr(remains).match(/\d{3}/gi);
+
+    if (thausand) {
+      let separator = remains ? '.' : '';
+      rupiah += separator + thausand.join('.');
+    }
+
+    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+    return prefix == undefined ? rupiah : rupiah ? 'Rp. ' + rupiah : '';
   };
 
   closeDrawer() {
@@ -89,7 +111,7 @@ class Cart extends Component {
                         }}
                       />
                       <Text>{item.product_name}</Text>
-                      <Text>{item.product_price}</Text>
+                      <Text>Rp.{this.formatRupiah(item.product_price)}</Text>
                     </View>
                     <Content>
                       <View style={styles.contentFlatList}>
@@ -114,7 +136,9 @@ class Cart extends Component {
                           <Text>+</Text>
                         </Button>
                       </View>
-                      <Text style={styles.totalPrice}>{item.totalPrice}</Text>
+                      <Text style={styles.totalPrice}>
+                        Rp.{this.formatRupiah(item.totalPrice)}
+                      </Text>
                     </Content>
                     <Button
                       style={styles.buttonRemove}
@@ -132,11 +156,21 @@ class Cart extends Component {
             <React.Fragment>
               <View style={styles.checkoutArea}>
                 <View style={styles.grandTotalArea}>
-                  <Text>Total : {cart.grandTotal}</Text>
-                  <Text>PPn : {cart.grandTotal * 0.1}</Text>
-                  <Text>
-                    Grand Total : {cart.grandTotal + cart.grandTotal * 0.1}
-                  </Text>
+                  <View>
+                    <Text>Total :</Text>
+                    <Text>PPn :</Text>
+                    <Text style={{ fontWeight: 'bold' }}>Grand Total :</Text>
+                  </View>
+                  <View>
+                    <Text>Rp.{this.formatRupiah(cart.grandTotal)}</Text>
+                    <Text>Rp.{this.formatRupiah(cart.grandTotal * 0.1)}</Text>
+                    <Text style={{ fontWeight: 'bold' }}>
+                      Rp.
+                      {this.formatRupiah(
+                        cart.grandTotal + cart.grandTotal * 0.1
+                      )}
+                    </Text>
+                  </View>
                 </View>
               </View>
               <TouchableOpacity
@@ -274,13 +308,17 @@ const styles = {
     margin: 16,
     padding: 16,
     borderRadius: 8,
-    marginBottom: 0,
-    flexDirection: 'row'
+    marginBottom: 0
+    // flexDirection: 'row'
   },
   viewFlatImage: { marginLeft: 8, width: 80 },
   flatListImage: { height: 50, width: 50 },
-  buttonFlatList: { padding: 16 },
+  buttonFlatList: { padding: 16, backgroundColor: '#33ccff' },
   totalPrice: { alignSelf: 'center', margin: 16 },
-  buttonRemove: { marginLeft: 8, padding: 16 },
-  grandTotalArea: { marginLeft: 8 }
+  buttonRemove: { marginLeft: 8, padding: 16, backgroundColor: '#ff6666' },
+  grandTotalArea: {
+    marginLeft: 8,
+    flexDirection: 'row',
+    justifyContent: 'space-between'
+  }
 };

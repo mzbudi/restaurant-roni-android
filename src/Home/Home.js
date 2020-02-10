@@ -128,14 +128,12 @@ class Home extends Component {
             }}>
             <Button
               rounded
-              success
               style={styles.buttonFilter}
               onPress={() => this.handleSort('product_name')}>
               <Text>Name</Text>
             </Button>
             <Button
               rounded
-              success
               style={styles.buttonFilter}
               onPress={() => this.handleSort('updated_by')}>
               <Text>Newest</Text>
@@ -214,7 +212,8 @@ const styles = {
   },
   backgroundContainer: { backgroundColor: '#ffb380', flex: 1 },
   buttonFilter: {
-    padding: 4
+    padding: 4,
+    backgroundColor: '#ff8000'
   }
 };
 

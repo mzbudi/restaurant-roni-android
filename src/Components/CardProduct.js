@@ -31,7 +31,9 @@ class CardProduct extends Component {
         />
         <View style={styles.bottomCardText}>
           <Text style={styles.textName}>{product_name}</Text>
-          <Text>{this.formatRupiah(product_price)}</Text>
+          <Text style={styles.textName}>
+            Rp.{this.formatRupiah(product_price)}
+          </Text>
         </View>
       </View>
     );
@@ -54,7 +56,7 @@ const styles = {
     borderTopRightRadius: 8
   },
   bottomCardText: { marginLeft: 8 },
-  textName: { fontSize: 16 }
+  textName: { fontSize: 16, padding: 4 }
 };
 
 export default CardProduct;

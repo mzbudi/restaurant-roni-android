@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Form, Item, Input, Label } from 'native-base';
+import Moment from 'moment';
 
 class ProfileField extends Component {
   render() {
@@ -16,7 +17,10 @@ class ProfileField extends Component {
         </Item>
         <Item fixedLabel last>
           <Label>Join Date</Label>
-          <Input value={userData.created_at} disabled />
+          <Input
+            value={String(Moment(userData.created_at).format('MMMM Do YYYY'))}
+            disabled
+          />
         </Item>
       </Form>
     );

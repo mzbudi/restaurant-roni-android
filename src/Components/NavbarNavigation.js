@@ -11,9 +11,6 @@ class NavbarNavigation extends Component {
 
   handleInput = text => {
     const { auth } = this.props;
-    this.setState({
-      nameSearch: text
-    });
 
     const headers = { authorization: auth.data.token };
     const config = {

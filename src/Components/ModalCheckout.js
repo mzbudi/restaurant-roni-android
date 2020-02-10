@@ -7,7 +7,7 @@ import {
   FlatList
 } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon, Text } from 'native-base';
+import { Icon, Text, Toast } from 'native-base';
 import { createOrder } from '../Public/redux/action/cart';
 
 class ModalCheckout extends Component {
@@ -28,9 +28,7 @@ class ModalCheckout extends Component {
       orders: cart.cartData
     };
     // console.log(body, header);
-    this.props.dispatch(createOrder(body, header)).catch(err => {
-      console.log(body, header);
-    });
+    this.props.dispatch(createOrder(body, header)).then(this.handleClose());
   };
   render() {
     const { cart } = this.props;

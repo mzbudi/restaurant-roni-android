@@ -11,13 +11,14 @@ import {
   Button,
   Left,
   Right,
-  Body
+  Body,
+  Icon
 } from 'native-base';
-import axios from 'axios';
-import qs from 'qs';
 import { connect } from 'react-redux';
 import NavbarHistory from '../Components/NavbarHistory';
 import SideBarCart from '../Components/SideBarCart';
+import { getHistory } from '../Public/redux/action/history';
+import Moment from 'moment';
 
 const dummies = [
   {
@@ -48,40 +49,58 @@ class History extends Component {
     header: null,
     headerShown: false
   };
+
+  componentDidMount() {
+    const { auth } = this.props;
+    const header = {
+      headers: { authorization: auth.data.token }
+    };
+
+    const id = auth.data.user_id;
+    this.props.dispatch(getHistory(id, header));
+  }
   render() {
+    const { history } = this.props;
     return (
       <Container style={styles.backgroundContainer}>
         <NavbarHistory />
-        <FlatList
-          data={dummies}
-          keyExtractor={item => item.id}
-          renderItem={({ item, index }) => {
-            //disini letak fungsi sederhana
-            return (
-              <View
-                style={{
-                  backgroundColor: 'white',
-                  elevation: 15,
-                  margin: 16,
-                  padding: 16,
-                  borderRadius: 8,
-                  marginBottom: 0,
-                  flexDirection: 'row'
-                }}>
-                <View style={{ flex: 1 }}>
-                  <Text>ID : {item.id}</Text>
-                  <Text>Invoice : {item.invoice}</Text>
-                </View>
-                <View style={{ flex: 1 }}>
-                  <Text>Cashier : {item.cashier_name}</Text>
-                  <Text>SubTotal: {item.price}</Text>
-                </View>
+        {history.dataHistory.length === 0 ? (
+          <Text>Belom ada Data</Text>
+        ) : (
+          <FlatList
+            data={history.dataHistory}
+            keyExtractor={item => item.id}
+            renderItem={({ item, index }) => {
+              return (
+                <View
+                  style={{
+                    backgroundColor: 'white',
+                    elevation: 15,
+                    margin: 16,
+                    padding: 16,
+                    borderRadius: 8,
+                    marginBottom: 0,
+                    flexDirection: 'row'
+                  }}>
+                  <View style={{ flex: 1 }}>
+                    <Text>Order Id : {item.order_id}</Text>
+                    <Text>Invoice : {item.invoice_number}</Text>
+                  </View>
+                  <View style={{ flex: 1 }}>
+                    <Text>PPn : {item.PPn}</Text>
+                    <Text>SubTotal: {item.subTotal}</Text>
+                  </View>
 
-                <Text style={{ flex: 1 }}>{item.date_created}</Text>
-              </View>
-            );
-          }}
-        />
+                  <Text style={{ flex: 1 }}>
+                    {String(Moment(item.created_at).format('MMMM Do YYYY'))}
+                  </Text>
+
+                  <Icon type="Feather" name="chevrons-right" />
+                </View>
+              );
+            }}
+          />
+        )}
       </Container>
     );
   }
@@ -165,24 +184,13 @@ const styles = {
 
 // export default Register;
 
-// const mapStateToProps = state => {
-//   return {
-//     auth: state.auth
-//   };
-// };
+const mapStateToProps = state => {
+  return {
+    auth: state.auth,
+    products: state.products,
+    cart: state.cart,
+    history: state.history
+  };
+};
 
-// const mapDispatchToProps = dispatch => ({
-//   setDataRegister: payload => {
-//     dispatch({
-//       type: 'POST_Register_FULLFILED',
-//       payload
-//     });
-//   }
-// });
-
-// export default connect(
-//   mapStateToProps,
-//   mapDispatchToProps
-// )(Register);
-
-export default History;
+export default connect(mapStateToProps)(History);

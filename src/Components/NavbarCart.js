@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import { View, Image, TouchableOpacity, Text } from 'react-native';
-import { Input, Item } from 'native-base';
-import cart from '../Public/Assets/icon/cart.png';
+import { Icon } from 'native-base';
+import { emptyCart } from '../Public/redux/action/cart';
 
 class NavbarCart extends Component {
   turnBackDrawer = () => {
     this.props.draw();
+  };
+  handleEmptyCart = () => {
+    this.props.dispatch(emptyCart());
   };
   render() {
     const { auth } = this.props;
@@ -40,6 +43,9 @@ class NavbarCart extends Component {
           }}>
           Your Cart
         </Text>
+        <TouchableOpacity onPress={() => this.handleEmptyCart()}>
+          <Icon type="AntDesign" name="delete" />
+        </TouchableOpacity>
       </View>
     );
   }
