@@ -25,16 +25,25 @@ class NavbarSidebar extends Component {
   //   };
 
   render() {
+    const { auth } = this.props;
     return (
       <View style={styles.navBar}>
-        <Image
-          style={styles.imageProfile}
-          source={{
-            uri:
-              'https://doktersehat.com/wp-content/uploads/2018/11/kopi-doktersehat.jpg'
-          }}
-        />
-        <Text>Nama User</Text>
+        {auth.data.profile_picture === '' ? (
+          <Image
+            style={styles.imageProfile}
+            source={require('../Public/Assets/image/EP.png')}
+          />
+        ) : (
+          <Image
+            style={styles.imageProfile}
+            source={{
+              uri:
+                'http://localhost:3001/' +
+                auth.data.profile_picture.replace('assets', '')
+            }}
+          />
+        )}
+        <Text>{auth.data.username}</Text>
       </View>
     );
   }

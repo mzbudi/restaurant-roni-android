@@ -3,34 +3,10 @@ import { View, Image, TouchableOpacity, Text } from 'react-native';
 import { Input, Item } from 'native-base';
 import cart from '../Public/Assets/icon/cart.png';
 
-class NavbarCart extends Component {
-  turnBackDrawer = () => {
-    this.props.draw();
-  };
+class NavbarHistory extends Component {
   render() {
-    const { auth } = this.props;
     return (
       <View style={styles.navBar}>
-        <TouchableOpacity
-          onPress={() => {
-            this.turnBackDrawer();
-          }}>
-          {auth.data.profile_picture === '' ? (
-            <Image
-              style={styles.imageProfile}
-              source={require('../Public/Assets/image/EP.png')}
-            />
-          ) : (
-            <Image
-              style={styles.imageProfile}
-              source={{
-                uri:
-                  'http://localhost:3001/' +
-                  auth.data.profile_picture.replace('assets', '')
-              }}
-            />
-          )}
-        </TouchableOpacity>
         <Text
           style={{
             flex: 2,
@@ -38,7 +14,7 @@ class NavbarCart extends Component {
             fontWeight: 'bold',
             fontSize: 18
           }}>
-          Your Cart
+          History
         </Text>
       </View>
     );
@@ -66,4 +42,4 @@ const styles = {
   searchBar: { flex: 3, marginLeft: 8 }
 };
 
-export default NavbarCart;
+export default NavbarHistory;

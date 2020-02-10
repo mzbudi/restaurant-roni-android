@@ -15,7 +15,6 @@ class Login extends Component {
   }
 
   state = {
-    num: 0,
     username: '',
     password: '',
     statusTextBox: {

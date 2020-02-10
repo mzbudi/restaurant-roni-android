@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, TouchableOpacity } from 'react-native';
 import NavbarNavigation from '../Components/NavbarNavigation';
 import CardProduct from '../Components/CardProduct';
 import { requestProducts } from './action';
+import { requestCategory } from '../Public/redux/action/category';
 import { connect } from 'react-redux';
 import SideBar from '../Components/SideBar';
-import { Input, Item, Drawer, Button, Text } from 'native-base';
+import { Drawer, Button, Text } from 'native-base';
+import CategoryPicker from '../Components/CategoryPicker';
+import { addCart } from '../Public/redux/action/cart';
 
 class Home extends Component {
   constructor(props) {
@@ -28,7 +31,11 @@ class Home extends Component {
   };
 
   componentDidMount() {
-    const headers = { authorization: this.props.auth.data.token };
+    const { auth } = this.props;
+    const headers = { authorization: auth.data.token };
+    const configCategory = {
+      headers
+    };
     const config = {
       headers,
       params: {
@@ -41,7 +48,62 @@ class Home extends Component {
       }
     };
     this.props.dispatch(requestProducts(config));
+    this.props.dispatch(requestCategory(configCategory));
   }
+
+  handleCategory = id => {
+    const { auth } = this.props;
+    const headers = { authorization: auth.data.token };
+    const config = {
+      headers,
+      params: {
+        nameSearch: '',
+        category_id: id,
+        limit: '1000',
+        page: 0,
+        product_name: '',
+        date: ''
+      }
+    };
+    this.props.dispatch(requestProducts(config));
+  };
+
+  handleSort = sorter => {
+    const { auth } = this.props;
+    const headers = { authorization: auth.data.token };
+    let config = '';
+    if (sorter === 'product_name') {
+      config = {
+        headers,
+        params: {
+          nameSearch: '',
+          category_id: '',
+          limit: '1000',
+          page: 0,
+          product_name: sorter,
+          date: ''
+        }
+      };
+    } else {
+      config = {
+        headers,
+        params: {
+          nameSearch: '',
+          category_id: '',
+          limit: '1000',
+          page: 0,
+          product_name: '',
+          date: sorter
+        }
+      };
+    }
+
+    this.props.dispatch(requestProducts(config));
+  };
+
+  addToCart = item => {
+    this.props.dispatch(addCart(item));
+  };
 
   render() {
     const { products } = this.props;
@@ -53,22 +115,51 @@ class Home extends Component {
         content={<SideBar {...this.props} navigator={this.navigator} />}
         onClose={() => this.closeDrawer()}>
         <View style={styles.backgroundContainer}>
-          <NavbarNavigation draw={this.openDrawer.bind(this)} />
-          <Text>Wellcome, Please Choose What You Want !</Text>
+          <NavbarNavigation {...this.props} draw={this.openDrawer.bind(this)} />
+          <Text style={{ alignSelf: 'center', padding: 8 }}>
+            Wellcome, Please Choose What You Want !
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              marginHorizontal: 16
+            }}>
+            <Button
+              rounded
+              success
+              style={styles.buttonFilter}
+              onPress={() => this.handleSort('product_name')}>
+              <Text>Name</Text>
+            </Button>
+            <Button
+              rounded
+              success
+              style={styles.buttonFilter}
+              onPress={() => this.handleSort('updated_by')}>
+              <Text>Newest</Text>
+            </Button>
+            <CategoryPicker {...this.props} />
+          </View>
           <View style={styles.container}>
             <FlatList
               data={products.dataProducts}
-              numColumns={3}
+              numColumns={2}
               keyExtractor={item => item.product_id}
               contentContainerStyle={styles.containerView}
               renderItem={({ item, index }) => {
-                //disini letak fungsi sederhanaaaa
                 return (
-                  <CardProduct
-                    product_image={item.product_image}
-                    product_name={item.product_name}
-                    product_price={item.product_price}
-                  />
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.addToCart(item);
+                    }}>
+                    <CardProduct
+                      product_image={item.product_image}
+                      product_name={item.product_name}
+                      product_price={item.product_price}
+                    />
+                  </TouchableOpacity>
                 );
               }}
             />
@@ -119,15 +210,20 @@ const styles = {
     width: 40
   },
   containerView: {
-    paddingBottom: 80
+    paddingBottom: 150
   },
-  backgroundContainer: { backgroundColor: '#ffb380', flex: 1 }
+  backgroundContainer: { backgroundColor: '#ffb380', flex: 1 },
+  buttonFilter: {
+    padding: 4
+  }
 };
 
 const mapStateToProps = state => {
   return {
     auth: state.auth,
-    products: state.products
+    products: state.products,
+    category: state.category,
+    cart: state.cart
   };
 };
 

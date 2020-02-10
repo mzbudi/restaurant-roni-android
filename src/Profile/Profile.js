@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { Container, Content, Form, Item, Input, Label } from 'native-base';
-import NavbarSidebar from '../Components/NavbarSidebar';
+import { Container, Form, Item, Input, Label } from 'native-base';
+import { connect } from 'react-redux';
+import ProfileField from '../Components/ProfileField';
 
 class Profile extends Component {
   constructor(props) {
@@ -15,38 +16,29 @@ class Profile extends Component {
     headerShown: false
   };
   render() {
+    const { auth } = this.props;
     return (
       <Container style={styles.backgroundContainer}>
         <View style={styles.profilePic}>
           <Text style={styles.profileText}>Profile</Text>
-          <Image
-            style={styles.imageProfile}
-            source={{
-              uri:
-                'https://doktersehat.com/wp-content/uploads/2018/11/kopi-doktersehat.jpg'
-            }}
-          />
+          {auth.data.profile_picture === '' ? (
+            <Image
+              style={styles.imageProfile}
+              source={require('../Public/Assets/image/EP.png')}
+            />
+          ) : (
+            <Image
+              style={styles.imageProfile}
+              source={{
+                uri:
+                  'http://localhost:3001/' +
+                  auth.data.profile_picture.replace('assets', '')
+              }}
+            />
+          )}
         </View>
         <View style={styles.formProfile}>
-          <Form>
-            <Item fixedLabel>
-              <Label>Name</Label>
-              <Input value={this.state.username} disabled />
-            </Item>
-            <Item fixedLabel>
-              <Label>Username</Label>
-              <Input value={this.state.username} disabled />
-            </Item>
-            <Item fixedLabel last>
-              <Label>Join Date</Label>
-              <Input value={this.state.username} disabled />
-            </Item>
-          </Form>
-          {/* <Text style={{ alignSelf: 'center' }}>
-            Name : {this.state.username}
-          </Text>
-          <Text>Name : {this.state.username} </Text>
-          <Text>Name : {this.state.username} </Text> */}
+          <ProfileField userData={auth.data} />
         </View>
         <TouchableOpacity style={styles.buttonChangeProfile}>
           <View>
@@ -63,7 +55,16 @@ class Profile extends Component {
   }
 }
 
-export default Profile;
+const mapStateToProps = state => {
+  return {
+    auth: state.auth,
+    products: state.products,
+    category: state.category,
+    cart: state.cart
+  };
+};
+
+export default connect(mapStateToProps)(Profile);
 
 const styles = {
   buttonChangeProfile: {

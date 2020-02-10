@@ -45,11 +45,11 @@ const styles = {
     margin: 8,
     borderRadius: 8,
     marginBottom: 8,
-    width: 90
+    width: 150
   },
   image: {
-    height: 90,
-    width: 90,
+    height: 120,
+    width: 150,
     borderTopLeftRadius: 8,
     borderTopRightRadius: 8
   },

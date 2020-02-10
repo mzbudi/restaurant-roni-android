@@ -21,10 +21,10 @@ class SideBarCart extends Component {
     this.props.navigation.navigate(link);
   };
 
-  // handleLogout = () => {
-  //   this.props.dispatch(requestLogout());
-  //   this.props.navigation.navigate('Auth');
-  // };
+  handleLogout = () => {
+    this.props.dispatch(requestLogout());
+    this.props.navigation.navigate('Auth');
+  };
 
   render() {
     return (
