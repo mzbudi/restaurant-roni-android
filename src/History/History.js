@@ -1,48 +1,10 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
-import {
-  Container,
-  Content,
-  Form,
-  Item,
-  Input,
-  Label,
-  Drawer,
-  Button,
-  Left,
-  Right,
-  Body,
-  Icon
-} from 'native-base';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { Container, Icon } from 'native-base';
 import { connect } from 'react-redux';
 import NavbarHistory from '../Components/NavbarHistory';
-import SideBarCart from '../Components/SideBarCart';
 import { getHistory } from '../Public/redux/action/history';
 import Moment from 'moment';
-
-const dummies = [
-  {
-    id: 1,
-    invoice: 123123,
-    cashier_name: 'Dian',
-    price: 10000,
-    date_created: '20/20/20'
-  },
-  {
-    id: 2,
-    invoice: 123123,
-    cashier_name: 'Dian',
-    price: 10000,
-    date_created: '20/20/20'
-  },
-  {
-    id: 3,
-    invoice: 123123,
-    cashier_name: 'Dian',
-    price: 10000,
-    date_created: '20/20/20'
-  }
-];
 
 class History extends Component {
   static navigationOptions = {
@@ -59,13 +21,33 @@ class History extends Component {
     const id = auth.data.user_id;
     this.props.dispatch(getHistory(id, header));
   }
+
+  formatRupiah = (angka, prefix) => {
+    let number_string = angka.toString().replace(/[^,\d]/g, '');
+    let split = number_string.split(',');
+    let remains = split[0].length % 3;
+    let rupiah = split[0].substr(0, remains);
+    let thausand = split[0].substr(remains).match(/\d{3}/gi);
+
+    if (thausand) {
+      let separator = remains ? '.' : '';
+      rupiah += separator + thausand.join('.');
+    }
+
+    rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+    return prefix === undefined ? rupiah : rupiah ? 'Rp. ' + rupiah : '';
+  };
+
+  handleDetail = item => {
+    this.props.navigation.navigate('OrderDetail', { item });
+  };
   render() {
     const { history } = this.props;
     return (
       <Container style={styles.backgroundContainer}>
         <NavbarHistory />
         {history.dataHistory.length === 0 ? (
-          <Text>Belom ada Data</Text>
+          <Text>Belum Ada Data</Text>
         ) : (
           <FlatList
             data={history.dataHistory}
@@ -83,19 +65,31 @@ class History extends Component {
                     flexDirection: 'row'
                   }}>
                   <View style={{ flex: 1 }}>
-                    <Text>Order Id : {item.order_id}</Text>
-                    <Text>Invoice : {item.invoice_number}</Text>
+                    <Text>Order Id : </Text>
+                    <Text style={{ marginTop: 8 }}>Invoice :</Text>
+                    <Text style={{ marginTop: 8 }}>SubTotal :</Text>
+                    <Text style={{ marginTop: 8 }}>Date :</Text>
                   </View>
                   <View style={{ flex: 1 }}>
-                    <Text>PPn : {item.PPn}</Text>
-                    <Text>SubTotal: {item.subTotal}</Text>
+                    <Text style={{ marginTop: 8 }}>{item.order_id}</Text>
+                    <Text style={{ marginTop: 8 }}>{item.invoice_number}</Text>
+                    <Text style={{ marginTop: 8 }}>
+                      Rp.{' '}
+                      {this.formatRupiah(
+                        parseInt(item.subTotal) + parseInt(item.PPn)
+                      )}
+                    </Text>
+                    <Text style={{ marginTop: 8 }}>
+                      {String(Moment(item.created_at).format('MMMM Do YYYY'))}
+                    </Text>
                   </View>
 
-                  <Text style={{ flex: 1 }}>
-                    {String(Moment(item.created_at).format('MMMM Do YYYY'))}
-                  </Text>
-
-                  <Icon type="Feather" name="chevrons-right" />
+                  <TouchableOpacity
+                    onPress={() => {
+                      this.handleDetail(item);
+                    }}>
+                    <Icon type="Feather" name="chevrons-right" />
+                  </TouchableOpacity>
                 </View>
               );
             }}

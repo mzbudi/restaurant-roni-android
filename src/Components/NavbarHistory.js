@@ -5,6 +5,7 @@ import cart from '../Public/Assets/icon/cart.png';
 
 class NavbarHistory extends Component {
   render() {
+    const { nameData } = this.props;
     return (
       <View style={styles.navBar}>
         <Text
@@ -14,7 +15,7 @@ class NavbarHistory extends Component {
             fontWeight: 'bold',
             fontSize: 18
           }}>
-          History
+          {nameData || 'History'}
         </Text>
       </View>
     );

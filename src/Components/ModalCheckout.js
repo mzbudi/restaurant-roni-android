@@ -45,7 +45,7 @@ class ModalCheckout extends Component {
               </TouchableOpacity>
             </View>
             <View>
-              <FlatList
+              {/* <FlatList
                 data={cart.cartData}
                 keyExtractor={item => item.product_id}
                 renderItem={({ item, index }) => {
@@ -58,7 +58,8 @@ class ModalCheckout extends Component {
                     </View>
                   );
                 }}
-              />
+              /> */}
+              <Text>Are You Sure Want to Proceed This Order?</Text>
             </View>
             <TouchableOpacity onPress={() => this.handleCheckout()}>
               <View style={styles.button}>
