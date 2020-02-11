@@ -4,39 +4,73 @@ import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import qs from 'qs';
 import { connect } from 'react-redux';
+import ImagePicker from 'react-native-image-picker';
 
 class Register extends Component {
   state = {
-    num: 0,
+    photo: null,
     username: '',
     password: '',
+    name: '',
     statusTextBox: {
       username: false,
       password: false,
       message: ''
-    }
+    },
+    profile_picture: {}
   };
 
-  handleCount = () => {
-    const { num } = this.state;
-    this.setState({
-      num: num + 1
+  static navigationOptions = {
+    header: null,
+    headerShown: false
+  };
+
+  handleChoosePhoto = () => {
+    const options = {
+      storageOptions: {
+        skipBackup: true,
+        path: 'images'
+      }
+    };
+    ImagePicker.showImagePicker(options, response => {
+      if (response.didCancel) {
+        console.log('User cancelled image picker');
+      } else if (response.error) {
+        console.log('ImagePicker Error: ', response.error);
+      } else if (response.customButton) {
+        console.log('User tapped custom button: ', response.customButton);
+      } else {
+        this.setState(
+          {
+            photo: response
+          },
+          () => {
+            console.log(response);
+            console.log(this.state.photo);
+          }
+        );
+      }
     });
   };
 
   handleRegister = () => {
-    const { username, password, statusTextBox } = this.state;
-    const body = {
-      username,
-      password
-    };
+    const { username, name, password, statusTextBox, photo } = this.state;
+    let body = new FormData();
+    console.log(photo);
+    body.append('username', username);
+    body.append('name', name);
+    body.append('password', password);
+    body.append('profile_picture', {
+      uri: photo.uri,
+      type: photo.type,
+      name: photo.fileName
+    });
 
     axios
-      .post('http://127.0.0.1:3001/auth/login', qs.stringify(body))
+      .post('http://127.0.0.1:3001/auth/register', body)
       .then(response => {
         if (response.status === 200) {
-          this.props.setDataLogin(response.data.data);
-          this.props.navigation.navigate('App');
+          console.log('berhasil');
         }
       })
       .catch(() => {
@@ -51,10 +85,6 @@ class Register extends Component {
       });
   };
 
-  handleRegister = () => {
-    this.props.navigation.navigate('Register');
-  };
-
   handleBack = () => {
     this.props.navigation.navigate('Login');
   };
@@ -63,7 +93,7 @@ class Register extends Component {
     this.setState({ [type]: text });
   };
   render() {
-    const { username, password, statusTextBox } = this.state;
+    const { username, password, statusTextBox, name } = this.state;
     return (
       <View style={styles.container}>
         <View style={styles.card}>
@@ -82,6 +112,13 @@ class Register extends Component {
                 placeholder={statusTextBox.message || 'Username'}
               />
             </Item>
+            <Item error={statusTextBox.username} inlineLabel>
+              <Input
+                onChangeText={text => this.handleInput(text, 'name')}
+                value={name}
+                placeholder={statusTextBox.message || 'Name'}
+              />
+            </Item>
             <Item error={statusTextBox.password}>
               <Input
                 secureTextEntry
@@ -89,6 +126,12 @@ class Register extends Component {
                 value={password}
                 placeholder={statusTextBox.message || 'Password'}
               />
+            </Item>
+            <Item>
+              <TouchableOpacity onPress={this.handleChoosePhoto}>
+                <Icon type="FontAwesome" name="camera" />
+              </TouchableOpacity>
+              <Input placeholder="Choose a Picture" />
             </Item>
           </Form>
           <TouchableOpacity onPress={this.handleRegister}>
