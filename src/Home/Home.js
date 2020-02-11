@@ -2,7 +2,10 @@ import React, { Component } from 'react';
 import { View, FlatList, TouchableOpacity } from 'react-native';
 import NavbarNavigation from '../Components/NavbarNavigation';
 import CardProduct from '../Components/CardProduct';
-import { requestProducts } from './action';
+import {
+  requestProducts,
+  emptyProducts
+} from '../Public/redux/action/products';
 import { requestCategory } from '../Public/redux/action/category';
 import { connect } from 'react-redux';
 import SideBar from '../Components/SideBar';
@@ -14,7 +17,13 @@ class Home extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      dataProducts: []
+      dataProducts: [],
+      nameSearch: '',
+      category_id: '',
+      limit: '5',
+      page: 0,
+      product_name: '',
+      date: ''
     };
   }
 
@@ -31,6 +40,7 @@ class Home extends Component {
   };
 
   componentDidMount() {
+    const { nameSearch, category_id, page, product_name, date } = this.state;
     const { auth } = this.props;
     const headers = { authorization: auth.data.token };
     const configCategory = {
@@ -41,7 +51,7 @@ class Home extends Component {
       params: {
         nameSearch: '',
         category_id: '',
-        limit: '1000',
+        limit: '5',
         page: 0,
         product_name: '',
         date: ''
@@ -51,53 +61,150 @@ class Home extends Component {
     this.props.dispatch(requestCategory(configCategory));
   }
 
-  handleCategory = id => {
-    const { auth } = this.props;
-    const headers = { authorization: auth.data.token };
-    const config = {
-      headers,
-      params: {
-        nameSearch: '',
-        category_id: id,
-        limit: '1000',
+  handleSearchByName = text => {
+    this.setState(
+      {
+        nameSearch: text,
+        category_id: '',
+        limit: '5',
         page: 0,
         product_name: '',
         date: ''
+      },
+      () => {
+        const { auth } = this.props;
+        const headers = { authorization: auth.data.token };
+        const config = {
+          headers,
+          params: {
+            nameSearch: text,
+            category_id: '',
+            limit: '5',
+            page: 0,
+            product_name: '',
+            date: ''
+          }
+        };
+        this.props.dispatch(emptyProducts());
+        this.props.dispatch(requestProducts(config));
       }
-    };
-    this.props.dispatch(requestProducts(config));
+    );
+  };
+
+  handleCategory = id => {
+    this.setState(
+      {
+        nameSearch: '',
+        category_id: id,
+        limit: '5',
+        page: 0,
+        product_name: '',
+        date: ''
+      },
+      () => {
+        const { auth } = this.props;
+        const headers = { authorization: auth.data.token };
+        const config = {
+          headers,
+          params: {
+            nameSearch: '',
+            category_id: id,
+            limit: '5',
+            page: 0,
+            product_name: '',
+            date: ''
+          }
+        };
+        this.props.dispatch(emptyProducts());
+        this.props.dispatch(requestProducts(config));
+      }
+    );
+  };
+
+  handleNextPage = () => {
+    const { nameSearch, category_id, page, product_name, date } = this.state;
+    this.setState(
+      {
+        page: page + 1
+      },
+      () => {
+        const { auth } = this.props;
+        const headers = { authorization: auth.data.token };
+        const config = {
+          headers,
+          params: {
+            nameSearch: nameSearch,
+            category_id: category_id,
+            limit: '5',
+            page: this.state.page,
+            product_name: product_name,
+            date: date
+          }
+        };
+        this.props.dispatch(requestProducts(config));
+      }
+    );
   };
 
   handleSort = sorter => {
     const { auth } = this.props;
     const headers = { authorization: auth.data.token };
-    let config = '';
+
     if (sorter === 'product_name') {
-      config = {
-        headers,
-        params: {
+      this.setState(
+        {
           nameSearch: '',
           category_id: '',
-          limit: '1000',
+          limit: '5',
           page: 0,
           product_name: sorter,
           date: ''
+        },
+        () => {
+          const config = {
+            headers,
+            params: {
+              nameSearch: '',
+              category_id: '',
+              limit: '5',
+              page: 0,
+              product_name: sorter,
+              date: ''
+            }
+          };
+          this.sortData(config);
         }
-      };
+      );
     } else {
-      config = {
-        headers,
-        params: {
+      this.setState(
+        {
           nameSearch: '',
           category_id: '',
-          limit: '1000',
+          limit: '5',
           page: 0,
           product_name: '',
           date: sorter
+        },
+        () => {
+          const config = {
+            headers,
+            params: {
+              nameSearch: '',
+              category_id: '',
+              limit: '5',
+              page: 0,
+              product_name: '',
+              date: sorter
+            }
+          };
+          this.sortData(config);
         }
-      };
+      );
     }
+  };
 
+  sortData = config => {
+    this.props.dispatch(emptyProducts());
     this.props.dispatch(requestProducts(config));
   };
 
@@ -115,7 +222,11 @@ class Home extends Component {
         content={<SideBar {...this.props} navigator={this.navigator} />}
         onClose={() => this.closeDrawer()}>
         <View style={styles.backgroundContainer}>
-          <NavbarNavigation {...this.props} draw={this.openDrawer.bind(this)} />
+          <NavbarNavigation
+            {...this.props}
+            draw={this.openDrawer.bind(this)}
+            input={this.handleSearchByName.bind(this)}
+          />
           <Text style={{ alignSelf: 'center', padding: 8 }}>
             Wellcome, Please Choose What You Want !
           </Text>
@@ -138,7 +249,10 @@ class Home extends Component {
               onPress={() => this.handleSort('updated_by')}>
               <Text>Newest</Text>
             </Button>
-            <CategoryPicker {...this.props} />
+            <CategoryPicker
+              {...this.props}
+              categoryPick={this.handleCategory.bind(this)}
+            />
           </View>
           <View style={styles.container}>
             <FlatList
@@ -160,6 +274,8 @@ class Home extends Component {
                   </TouchableOpacity>
                 );
               }}
+              onEndReached={this.handleNextPage}
+              onEndReachedThreshold={0.1}
             />
           </View>
         </View>

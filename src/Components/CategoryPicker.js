@@ -11,36 +11,7 @@ export default class CategoryPicker extends Component {
   }
 
   handleFilter = id => {
-    const { auth } = this.props;
-    const headers = { authorization: auth.data.token };
-    let config = '';
-    if (id === 'All') {
-      config = {
-        headers,
-        params: {
-          nameSearch: '',
-          category_id: '',
-          limit: '1000',
-          page: 0,
-          product_name: '',
-          date: ''
-        }
-      };
-    } else {
-      config = {
-        headers,
-        params: {
-          nameSearch: '',
-          category_id: id,
-          limit: '1000',
-          page: 0,
-          product_name: '',
-          date: ''
-        }
-      };
-    }
-
-    this.props.dispatch(requestProducts(config));
+    this.props.categoryPick(id);
   };
 
   onValueChange(value) {
@@ -69,7 +40,7 @@ export default class CategoryPicker extends Component {
               onValueChange={value => {
                 this.onValueChange(value);
               }}>
-              <Picker.Item label="All" value="All" />
+              <Picker.Item label="All" value="" />
               {category.dataCategory.map((item, index) => {
                 return (
                   <Picker.Item

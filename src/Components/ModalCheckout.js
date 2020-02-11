@@ -1,19 +1,25 @@
 import React, { Component } from 'react';
-import {
-  View,
-  Modal,
-  StyleSheet,
-  TouchableOpacity,
-  FlatList
-} from 'react-native';
+import { View, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon, Text, Toast } from 'native-base';
+import { Icon, Text } from 'native-base';
 import { createOrder } from '../Public/redux/action/cart';
 
 class ModalCheckout extends Component {
   handleClose() {
     if (this.props.onRequestClose) {
       this.props.onRequestClose();
+    }
+  }
+
+  handleCheckoutSucces() {
+    if (this.props.succesCheckout) {
+      this.props.succesCheckout();
+    }
+  }
+
+  handleCheckoutFailed() {
+    if (this.props.failedCheckout) {
+      this.props.failedCheckout();
     }
   }
 
@@ -28,10 +34,16 @@ class ModalCheckout extends Component {
       orders: cart.cartData
     };
     // console.log(body, header);
-    this.props.dispatch(createOrder(body, header)).then(this.handleClose());
+    this.props
+      .dispatch(createOrder(body, header))
+      .then(res => {
+        this.handleCheckoutSucces(res);
+      })
+      .catch(err => {
+        this.handleCheckoutFailed(err);
+      });
   };
   render() {
-    const { cart } = this.props;
     return (
       <Modal transparent animationType={'fade'} {...this.props}>
         <View style={styles.modalContainer}>
@@ -45,20 +57,6 @@ class ModalCheckout extends Component {
               </TouchableOpacity>
             </View>
             <View>
-              {/* <FlatList
-                data={cart.cartData}
-                keyExtractor={item => item.product_id}
-                renderItem={({ item, index }) => {
-                  return (
-                    <View style={{ flexDirection: 'row' }}>
-                      <Text>{item.product_name}</Text>
-                      <Text>{item.product_price}</Text>
-                      <Text>{item.quantity}</Text>
-                      <Text>{item.totalPrice}</Text>
-                    </View>
-                  );
-                }}
-              /> */}
               <Text>Are You Sure Want to Proceed This Order?</Text>
             </View>
             <TouchableOpacity onPress={() => this.handleCheckout()}>

@@ -10,21 +10,7 @@ class NavbarNavigation extends Component {
   };
 
   handleInput = text => {
-    const { auth } = this.props;
-
-    const headers = { authorization: auth.data.token };
-    const config = {
-      headers,
-      params: {
-        nameSearch: text,
-        category_id: '',
-        limit: '1000',
-        page: 0,
-        product_name: '',
-        date: ''
-      }
-    };
-    this.props.dispatch(requestProducts(config));
+    this.props.input(text);
   };
 
   handleCart = () => {

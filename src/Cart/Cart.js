@@ -7,7 +7,8 @@ import { connect } from 'react-redux';
 import {
   removeCart,
   incrementCart,
-  decrementCart
+  decrementCart,
+  emptyCart
 } from '../Public/redux/action/cart';
 import ModalCheckout from '../Components/ModalCheckout';
 
@@ -27,10 +28,29 @@ class Cart extends Component {
     this.setState({
       visible: false
     });
+  };
+
+  handleCheckoutSucces = () => {
+    this.setState({
+      visible: false
+    });
     Toast.show({
       text: 'Transaction Succes',
       buttonText: 'Okay',
       type: 'success',
+      duration: 5000
+    });
+    this.props.dispatch(emptyCart());
+  };
+
+  handleCheckoutFailed = () => {
+    this.setState({
+      visible: false
+    });
+    Toast.show({
+      text: 'Transaction Failed',
+      buttonText: 'Okay',
+      type: 'danger',
       duration: 5000
     });
   };
@@ -186,6 +206,8 @@ class Cart extends Component {
           )}
           <ModalCheckout
             onRequestClose={this.handleCloseModal.bind(this)}
+            succesCheckout={this.handleCheckoutSucces.bind(this)}
+            failedCheckout={this.handleCheckoutFailed.bind(this)}
             visible={this.state.visible}
             cartCheckout={cart.cartData}
             {...this.props}
@@ -309,7 +331,6 @@ const styles = {
     padding: 16,
     borderRadius: 8,
     marginBottom: 0
-    // flexDirection: 'row'
   },
   viewFlatImage: { marginLeft: 8, width: 80 },
   flatListImage: { height: 50, width: 50 },
