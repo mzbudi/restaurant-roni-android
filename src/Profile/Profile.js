@@ -15,13 +15,22 @@ class Profile extends Component {
     header: null,
     headerShown: false
   };
+
+  handleChangePassword = () => {
+    this.props.navigation.navigate('ChangePassword');
+  };
+
+  handleChangeProfile = () => {
+    this.props.navigation.navigate('ChangeProfile');
+  };
+
   render() {
-    const { auth } = this.props;
+    const { auth, users } = this.props;
     return (
       <Container style={styles.backgroundContainer}>
         <View style={styles.profilePic}>
           <Text style={styles.profileText}>Profile</Text>
-          {auth.data.profile_picture === '' ? (
+          {users.profile_picture === '' ? (
             <Image
               style={styles.imageProfile}
               source={require('../Public/Assets/image/EP.png')}
@@ -32,20 +41,28 @@ class Profile extends Component {
               source={{
                 uri:
                   'http://localhost:3001/' +
-                  auth.data.profile_picture.replace('assets', '')
+                  users.profile_picture.replace('assets', '')
               }}
             />
           )}
         </View>
         <View style={styles.formProfile}>
-          <ProfileField userData={auth.data} />
+          <ProfileField userData={auth.data} name={users.name} />
         </View>
-        <TouchableOpacity style={styles.buttonChangeProfile}>
+        <TouchableOpacity
+          style={styles.buttonChangeProfile}
+          onPress={() => {
+            this.handleChangeProfile();
+          }}>
           <View>
             <Text style={styles.text}>Change Profile</Text>
           </View>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.buttonChangeProfile}>
+        <TouchableOpacity
+          style={styles.buttonChangeProfile}
+          onPress={() => {
+            this.handleChangePassword();
+          }}>
           <View>
             <Text style={styles.text}>Change Password</Text>
           </View>
@@ -60,7 +77,8 @@ const mapStateToProps = state => {
     auth: state.auth,
     products: state.products,
     category: state.category,
-    cart: state.cart
+    cart: state.cart,
+    users: state.users
   };
 };
 

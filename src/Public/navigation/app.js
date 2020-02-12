@@ -4,11 +4,15 @@ import History from '../../History';
 import Profile from '../../Profile';
 import Cart from '../../Cart';
 import OrderDetail from '../../OrderDetail';
+import ChangePassword from '../../ChangePassword/';
+import ChangeProfile from '../../ChangeProfile/';
 
 export default createStackNavigator({
   Home,
   History,
   Profile,
   Cart,
-  OrderDetail
+  OrderDetail,
+  ChangePassword,
+  ChangeProfile
 });

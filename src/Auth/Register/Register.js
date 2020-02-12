@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Form, Item, Input, Label, Icon } from 'native-base';
 import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
-import qs from 'qs';
 import { connect } from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
 
@@ -45,7 +44,6 @@ class Register extends Component {
             photo: response
           },
           () => {
-            console.log(response);
             console.log(this.state.photo);
           }
         );
@@ -56,15 +54,10 @@ class Register extends Component {
   handleRegister = () => {
     const { username, name, password, statusTextBox, photo } = this.state;
     let body = new FormData();
-    console.log(photo);
     body.append('username', username);
     body.append('name', name);
     body.append('password', password);
-    body.append('profile_picture', {
-      uri: photo.uri,
-      type: photo.type,
-      name: photo.fileName
-    });
+    body.append('profile_picture', photo);
 
     axios
       .post('http://127.0.0.1:3001/auth/register', body)
@@ -131,7 +124,14 @@ class Register extends Component {
               <TouchableOpacity onPress={this.handleChoosePhoto}>
                 <Icon type="FontAwesome" name="camera" />
               </TouchableOpacity>
-              <Input placeholder="Choose a Picture" />
+              <Input
+                placeholder={
+                  this.state.photo !== null
+                    ? this.state.photo.fileName
+                    : 'Choose a Picture'
+                }
+                disabled
+              />
             </Item>
           </Form>
           <TouchableOpacity onPress={this.handleRegister}>

@@ -25,10 +25,10 @@ class NavbarSidebar extends Component {
   //   };
 
   render() {
-    const { auth } = this.props;
+    const { auth, users } = this.props;
     return (
       <View style={styles.navBar}>
-        {auth.data.profile_picture === '' ? (
+        {users.profile_picture === '' ? (
           <Image
             style={styles.imageProfile}
             source={require('../Public/Assets/image/EP.png')}
@@ -39,11 +39,11 @@ class NavbarSidebar extends Component {
             source={{
               uri:
                 'http://localhost:3001/' +
-                auth.data.profile_picture.replace('assets', '')
+                users.profile_picture.replace('assets', '')
             }}
           />
         )}
-        <Text>{auth.data.username}</Text>
+        <Text>{auth.username}</Text>
       </View>
     );
   }

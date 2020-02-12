@@ -17,14 +17,14 @@ class NavbarNavigation extends Component {
     this.props.navigation.navigate('Cart');
   };
   render() {
-    const { cart, auth } = this.props;
+    const { cart, users } = this.props;
     return (
       <View style={styles.navBar}>
         <TouchableOpacity
           onPress={() => {
             this.turnBackDrawer();
           }}>
-          {auth.data.profile_picture === '' ? (
+          {users.profile_picture === '' ? (
             <Image
               style={styles.imageProfile}
               source={require('../Public/Assets/image/EP.png')}
@@ -35,7 +35,7 @@ class NavbarNavigation extends Component {
               source={{
                 uri:
                   'http://localhost:3001/' +
-                  auth.data.profile_picture.replace('assets', '')
+                  users.profile_picture.replace('assets', '')
               }}
             />
           )}

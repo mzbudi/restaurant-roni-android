@@ -221,7 +221,8 @@ const mapStateToProps = state => {
   return {
     auth: state.auth,
     products: state.products,
-    cart: state.cart
+    cart: state.cart,
+    users: state.users
   };
 };
 

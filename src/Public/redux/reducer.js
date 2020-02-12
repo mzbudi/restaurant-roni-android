@@ -5,6 +5,7 @@ import cart from './reducers/cart';
 import category from './reducers/category';
 import history from './reducers/history';
 import orderDetail from './reducers/orderDetail';
+import users from './reducers/users';
 
 export default combineReducers({
   auth,
@@ -12,5 +13,6 @@ export default combineReducers({
   cart,
   category,
   history,
-  orderDetail
+  orderDetail,
+  users
 });

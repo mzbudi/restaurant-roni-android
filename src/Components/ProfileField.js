@@ -4,12 +4,12 @@ import Moment from 'moment';
 
 class ProfileField extends Component {
   render() {
-    const { userData } = this.props;
+    const { userData, name } = this.props;
     return (
       <Form>
         <Item fixedLabel>
           <Label>Name</Label>
-          <Input value={userData.name} disabled />
+          <Input value={name} disabled />
         </Item>
         <Item fixedLabel>
           <Label>Username</Label>

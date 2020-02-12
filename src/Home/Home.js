@@ -12,6 +12,7 @@ import SideBar from '../Components/SideBar';
 import { Drawer, Button, Text } from 'native-base';
 import CategoryPicker from '../Components/CategoryPicker';
 import { addCart } from '../Public/redux/action/cart';
+import { getProfile } from '../Public/redux/action/users';
 
 class Home extends Component {
   constructor(props) {
@@ -40,9 +41,9 @@ class Home extends Component {
   };
 
   componentDidMount() {
-    const { nameSearch, category_id, page, product_name, date } = this.state;
     const { auth } = this.props;
     const headers = { authorization: auth.data.token };
+    const user_id = auth.data.user_id;
     const configCategory = {
       headers
     };
@@ -57,6 +58,8 @@ class Home extends Component {
         date: ''
       }
     };
+    this.props.dispatch(getProfile(user_id, configCategory));
+    this.props.dispatch(emptyProducts());
     this.props.dispatch(requestProducts(config));
     this.props.dispatch(requestCategory(configCategory));
   }
@@ -338,7 +341,8 @@ const mapStateToProps = state => {
     auth: state.auth,
     products: state.products,
     category: state.category,
-    cart: state.cart
+    cart: state.cart,
+    users: state.users
   };
 };
 
