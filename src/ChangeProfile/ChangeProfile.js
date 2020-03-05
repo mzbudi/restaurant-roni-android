@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
 import ModalChangeProfile from '../Components/ModalChangeProfile';
 import { getProfile } from '../Public/redux/action/users';
+import { API_HOST } from 'react-native-dotenv';
 
 class ChangeProfile extends Component {
   constructor(props) {
@@ -145,9 +146,7 @@ class ChangeProfile extends Component {
             <Image
               style={styles.imageProfile}
               source={{
-                uri:
-                  'http://localhost:3001/' +
-                  users.profile_picture.replace('assets', '')
+                uri: `${API_HOST}` + users.profile_picture.replace('assets', '')
               }}
             />
           )}
@@ -174,7 +173,6 @@ class ChangeProfile extends Component {
             <Item fixedLabel error={textName}>
               <Label>New Name : </Label>
               <Input
-                secureTextEntry
                 onChangeText={text => this.handleInput(text, 'name')}
                 value={name}
                 placeholder={message}

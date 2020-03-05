@@ -13,6 +13,7 @@ import {
   Icon
 } from 'native-base';
 import { Image, View } from 'react-native';
+import { API_HOST } from 'react-native-dotenv';
 
 class NavbarSidebar extends Component {
   //   handleLink = link => {
@@ -37,9 +38,7 @@ class NavbarSidebar extends Component {
           <Image
             style={styles.imageProfile}
             source={{
-              uri:
-                'http://localhost:3001/' +
-                users.profile_picture.replace('assets', '')
+              uri: `${API_HOST}` + users.profile_picture.replace('assets', '')
             }}
           />
         )}

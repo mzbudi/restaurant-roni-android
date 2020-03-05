@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { View, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
-import { Icon, Text } from 'native-base';
+import { Icon, Text, Toast } from 'native-base';
 import { changePassword, changeProfile } from '../Public/redux/action/users';
 
 class ModalChangeProfile extends Component {
@@ -23,7 +23,7 @@ class ModalChangeProfile extends Component {
     }
   }
 
-  handleChangePassword = () => {
+  handleChangeProfile = () => {
     const { auth, photo, name } = this.props;
     const header = {
       headers: { authorization: auth.data.token }
@@ -33,11 +33,20 @@ class ModalChangeProfile extends Component {
     let body = new FormData();
     body.append('name', name);
     if (photo !== null) {
-      body.append('profile_picture', {
-        uri: photo.uri,
-        type: photo.type,
-        name: photo.fileName
-      });
+      if (photo.fileSize > 5120000) {
+        Toast.show({
+          text: 'File Too Large, Max Size 5 MB',
+          buttonText: 'Okay',
+          type: 'danger',
+          duration: 5000
+        });
+      } else {
+        body.append('profile_picture', {
+          uri: photo.uri,
+          type: photo.type,
+          name: photo.fileName
+        });
+      }
     } else {
       body.append('photo', photo);
     }
@@ -67,7 +76,7 @@ class ModalChangeProfile extends Component {
             <View>
               <Text>Are You Sure Want to Change Profile Information?</Text>
             </View>
-            <TouchableOpacity onPress={() => this.handleChangePassword()}>
+            <TouchableOpacity onPress={() => this.handleChangeProfile()}>
               <View style={styles.button}>
                 <Text style={styles.text}>Change it!</Text>
               </View>

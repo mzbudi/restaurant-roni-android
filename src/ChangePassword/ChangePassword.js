@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, Image, TouchableOpacity } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
 import { Container, Form, Item, Input, Label, Toast } from 'native-base';
 import { connect } from 'react-redux';
 import ModalChangePassword from '../Components/ModalChangePassword';
@@ -77,7 +77,6 @@ class ChangePassword extends Component {
   };
 
   render() {
-    const { auth } = this.props;
     const { oldPassword, newPassword, rePassword } = this.state;
     return (
       <Container style={styles.backgroundContainer}>

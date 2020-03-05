@@ -13,6 +13,7 @@ import { Drawer, Button, Text } from 'native-base';
 import CategoryPicker from '../Components/CategoryPicker';
 import { addCart } from '../Public/redux/action/cart';
 import { getProfile } from '../Public/redux/action/users';
+import qs from 'qs';
 
 class Home extends Component {
   constructor(props) {

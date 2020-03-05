@@ -3,6 +3,7 @@ import { View, Image, TouchableOpacity } from 'react-native';
 import { Input, Item, Badge, Text } from 'native-base';
 import cartImg from '../Public/Assets/icon/cart.png';
 import { requestProducts } from '../Home/action';
+import { API_HOST } from 'react-native-dotenv';
 
 class NavbarNavigation extends Component {
   turnBackDrawer = () => {
@@ -33,9 +34,7 @@ class NavbarNavigation extends Component {
             <Image
               style={styles.imageProfile}
               source={{
-                uri:
-                  'http://localhost:3001/' +
-                  users.profile_picture.replace('assets', '')
+                uri: `${API_HOST}` + users.profile_picture.replace('assets', '')
               }}
             />
           )}

@@ -11,6 +11,7 @@ import {
   emptyCart
 } from '../Public/redux/action/cart';
 import ModalCheckout from '../Components/ModalCheckout';
+import { API_HOST } from 'react-native-dotenv';
 
 class Cart extends Component {
   constructor(props) {
@@ -67,8 +68,8 @@ class Cart extends Component {
       rupiah += separator + thausand.join('.');
     }
 
-    rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-    return prefix == undefined ? rupiah : rupiah ? 'Rp. ' + rupiah : '';
+    rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+    return prefix === undefined ? rupiah : rupiah ? 'Rp. ' + rupiah : '';
   };
 
   closeDrawer() {
@@ -119,8 +120,7 @@ class Cart extends Component {
               keyExtractor={item => item.id}
               renderItem={({ item, index }) => {
                 const product_image_fixed =
-                  'http://localhost:3001/' +
-                  item.product_image.replace('assets', '');
+                  `${API_HOST}` + item.product_image.replace('assets', '');
                 return (
                   <View style={styles.viewFlatList}>
                     <View style={styles.viewFlatImage}>
@@ -179,12 +179,12 @@ class Cart extends Component {
                   <View>
                     <Text>Total :</Text>
                     <Text>PPn :</Text>
-                    <Text style={{ fontWeight: 'bold' }}>Grand Total :</Text>
+                    <Text style={styles.fontBold}>Grand Total :</Text>
                   </View>
                   <View>
                     <Text>Rp.{this.formatRupiah(cart.grandTotal)}</Text>
                     <Text>Rp.{this.formatRupiah(cart.grandTotal * 0.1)}</Text>
-                    <Text style={{ fontWeight: 'bold' }}>
+                    <Text style={styles.fontBold}>
                       Rp.
                       {this.formatRupiah(
                         cart.grandTotal + cart.grandTotal * 0.1
@@ -235,6 +235,7 @@ const styles = {
     borderRadius: 8,
     alignItems: 'center'
   },
+  fontBold: { fontWeight: 'bold' },
   formProfile: {
     backgroundColor: 'white',
     elevation: 15,

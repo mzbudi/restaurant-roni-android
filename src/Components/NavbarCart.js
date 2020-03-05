@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Image, TouchableOpacity, Text } from 'react-native';
 import { Icon } from 'native-base';
 import { emptyCart } from '../Public/redux/action/cart';
+import { API_HOST } from 'react-native-dotenv';
 
 class NavbarCart extends Component {
   turnBackDrawer = () => {
@@ -27,9 +28,7 @@ class NavbarCart extends Component {
             <Image
               style={styles.imageProfile}
               source={{
-                uri:
-                  'http://localhost:3001/' +
-                  users.profile_picture.replace('assets', '')
+                uri: `${API_HOST}` + users.profile_picture.replace('assets', '')
               }}
             />
           )}

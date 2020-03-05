@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Image, Text } from 'react-native';
+import { API_HOST } from 'react-native-dotenv';
 
 class CardProduct extends Component {
   formatRupiah = (angka, prefix) => {
@@ -20,7 +21,7 @@ class CardProduct extends Component {
   render() {
     const { product_name, product_price, product_image } = this.props;
     const product_image_fixed =
-      'http://localhost:3001/' + product_image.replace('assets', '');
+      `${API_HOST}` + product_image.replace('assets', '');
     return (
       <View style={styles.card}>
         <Image

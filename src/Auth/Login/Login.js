@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Form, Item, Input } from 'native-base';
+import { Form, Item, Input, Toast } from 'native-base';
 import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import qs from 'qs';
 import { connect } from 'react-redux';
+import { API_HOST } from 'react-native-dotenv';
 
 class Login extends Component {
   componentDidMount() {
@@ -44,7 +45,7 @@ class Login extends Component {
     };
 
     axios
-      .post('http://127.0.0.1:3001/auth/login', qs.stringify(body))
+      .post(`${API_HOST}/auth/login`, body)
       .then(response => {
         if (response.status === 200) {
           this.props.setDataLogin(response.data.data);
@@ -59,6 +60,12 @@ class Login extends Component {
             password: true,
             message: 'This Field Must be Filled'
           }
+        });
+        Toast.show({
+          text: 'Wrong Username or Password',
+          buttonText: 'Okay',
+          type: 'danger',
+          duration: 5000
         });
       });
   };
@@ -81,9 +88,7 @@ class Login extends Component {
                 source={require('../../Public/Assets/image/logo.png')}
                 style={styles.imgLogo}
               />
-              <Text style={{ alignSelf: 'center' }}>
-                Please Login To Your Account
-              </Text>
+              <Text style={styles.TextTitle}>Please Login To Your Account</Text>
               <Item error={statusTextBox.username} inlineLabel>
                 <Input
                   onChangeText={text => this.handleInput(text, 'username')}
@@ -137,12 +142,10 @@ const mapDispatchToProps = dispatch => ({
   }
 });
 
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Login);
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
 
 const styles = StyleSheet.create({
+  TextTitle: { alignSelf: 'center' },
   button: {
     marginTop: 16,
     backgroundColor: '#669999',

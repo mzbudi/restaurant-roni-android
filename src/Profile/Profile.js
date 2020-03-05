@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Container, Form, Item, Input, Label } from 'native-base';
 import { connect } from 'react-redux';
 import ProfileField from '../Components/ProfileField';
+import { API_HOST } from 'react-native-dotenv';
 
 class Profile extends Component {
   constructor(props) {
@@ -39,9 +40,7 @@ class Profile extends Component {
             <Image
               style={styles.imageProfile}
               source={{
-                uri:
-                  'http://localhost:3001/' +
-                  users.profile_picture.replace('assets', '')
+                uri: `${API_HOST}` + users.profile_picture.replace('assets', '')
               }}
             />
           )}

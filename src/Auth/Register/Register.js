@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
-import { Form, Item, Input, Label, Icon } from 'native-base';
+import { Form, Item, Input, Icon, Toast } from 'native-base';
 import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import ImagePicker from 'react-native-image-picker';
+import { API_HOST } from 'react-native-dotenv';
 
 class Register extends Component {
   state = {
@@ -33,49 +34,83 @@ class Register extends Component {
     };
     ImagePicker.showImagePicker(options, response => {
       if (response.didCancel) {
-        console.log('User cancelled image picker');
+        // console.log('User cancelled image picker');
       } else if (response.error) {
-        console.log('ImagePicker Error: ', response.error);
+        // console.log('ImagePicker Error: ', response.error);
       } else if (response.customButton) {
-        console.log('User tapped custom button: ', response.customButton);
+        // console.log('User tapped custom button: ', response.customButton);
       } else {
-        this.setState(
-          {
-            photo: response
-          },
-          () => {
-            console.log(this.state.photo);
-          }
-        );
+        this.setState({
+          photo: response
+        });
       }
     });
   };
 
   handleRegister = () => {
     const { username, name, password, statusTextBox, photo } = this.state;
-    let body = new FormData();
-    body.append('username', username);
-    body.append('name', name);
-    body.append('password', password);
-    body.append('profile_picture', photo);
-
-    axios
-      .post('http://127.0.0.1:3001/auth/register', body)
-      .then(response => {
-        if (response.status === 200) {
-          console.log('berhasil');
-        }
-      })
-      .catch(() => {
-        this.setState({
-          statusTextBox: {
-            ...statusTextBox,
-            username: true,
-            password: true,
-            message: 'This Field Must be Filled'
-          }
-        });
+    if (username === '' || name === '' || password === '') {
+      Toast.show({
+        text: 'Data Must be Filled',
+        buttonText: 'Okay',
+        type: 'danger',
+        duration: 5000
       });
+    } else {
+      let body = new FormData();
+      body.append('username', username);
+      body.append('name', name);
+      body.append('password', password);
+      body.append('profile_picture', {
+        uri: photo.uri,
+        type: photo.type,
+        name: photo.fileName
+      });
+      if (photo.fileSize > 5120000) {
+        Toast.show({
+          text: 'File Too Large, Max Size 5 MB',
+          buttonText: 'Okay',
+          type: 'danger',
+          duration: 5000
+        });
+      } else {
+        axios
+          .post(`${API_HOST}/auth/register`, body)
+          .then(response => {
+            if (response.status === 200) {
+              Toast.show({
+                text: 'Register Berhasil',
+                buttonText: 'Okay',
+                type: 'success',
+                duration: 5000
+              });
+              this.setState({
+                photo: null,
+                username: '',
+                password: '',
+                name: ''
+              });
+            }
+          })
+          .catch(err => {
+            this.setState({
+              statusTextBox: {
+                ...statusTextBox,
+                username: true,
+                password: true,
+                message: 'This Field Must be Filled'
+              }
+            });
+            Toast.show({
+              text: 'Username Exist',
+              buttonText: 'Okay',
+              type: 'danger',
+              duration: 5000
+            });
+            console.log(err);
+          });
+      }
+    }
   };
 
   handleBack = () => {
@@ -95,9 +130,7 @@ class Register extends Component {
               source={require('../../Public/Assets/image/logo.png')}
               style={styles.imgLogo}
             />
-            <Text style={{ alignSelf: 'center' }}>
-              Please Register Your Account
-            </Text>
+            <Text style={styles.textCenter}>Please Register Your Account</Text>
             <Item error={statusTextBox.username} inlineLabel>
               <Input
                 onChangeText={text => this.handleInput(text, 'username')}
@@ -150,8 +183,6 @@ class Register extends Component {
   }
 }
 
-// export default Register;
-
 const mapStateToProps = state => {
   return {
     auth: state.auth
@@ -180,7 +211,7 @@ const styles = StyleSheet.create({
     width: '100%',
     alignItems: 'center'
   },
-
+  textCenter: { alignSelf: 'center' },
   buttonBack: {
     marginTop: 16,
     backgroundColor: '#ff5c33',
