@@ -8,7 +8,7 @@
 
 ## Demo Account
 1. Admin level : 
-	* User ID : roni
+	* User ID : admin
 	* Password : roni
 2. Cashier Level : 
 	* User ID : roni
