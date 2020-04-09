@@ -1,23 +1,9 @@
 import React, { Component } from 'react';
 import { View, Image, Text } from 'react-native';
 import { API_HOST } from 'react-native-dotenv';
+import { formatRupiah } from '../Public/helper/parseRupiah';
 
 class CardProduct extends Component {
-  formatRupiah = (angka, prefix) => {
-    let number_string = angka.toString().replace(/[^,\d]/g, '');
-    let split = number_string.split(',');
-    let remains = split[0].length % 3;
-    let rupiah = split[0].substr(0, remains);
-    let thausand = split[0].substr(remains).match(/\d{3}/gi);
-
-    if (thausand) {
-      let separator = remains ? '.' : '';
-      rupiah += separator + thausand.join('.');
-    }
-
-    rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
-    return prefix === undefined ? rupiah : rupiah ? 'Rp. ' + rupiah : '';
-  };
   render() {
     const { product_name, product_price, product_image } = this.props;
     const product_image_fixed =
@@ -32,8 +18,8 @@ class CardProduct extends Component {
         />
         <View style={styles.bottomCardText}>
           <Text style={styles.textName}>{product_name}</Text>
-          <Text style={styles.textName}>
-            Rp.{this.formatRupiah(product_price)}
+          <Text style={styles.textPrice}>
+            {formatRupiah(product_price, 'Rp. ')}
           </Text>
         </View>
       </View>
@@ -57,7 +43,8 @@ const styles = {
     borderTopRightRadius: 8
   },
   bottomCardText: { marginLeft: 8 },
-  textName: { fontSize: 16, padding: 4 }
+  textName: { fontSize: 16, padding: 4, fontWeight: 'bold' },
+  textPrice: { fontSize: 14, padding: 4, fontWeight: 'bold' }
 };
 
 export default CardProduct;

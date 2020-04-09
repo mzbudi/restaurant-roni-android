@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
-import { Form, Item, Input, Toast } from 'native-base';
+import { Form, Item, Input, Toast, Spinner } from 'native-base';
 import { View, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
-import axios from 'axios';
-import qs from 'qs';
 import { connect } from 'react-redux';
-import { API_HOST } from 'react-native-dotenv';
+import { requestLogin } from '../../Public/redux/action/auth';
 
 class Login extends Component {
   componentDidMount() {
@@ -22,19 +20,13 @@ class Login extends Component {
       username: false,
       password: false,
       message: ''
-    }
+    },
+    loginLoading: false
   };
 
   static navigationOptions = {
     header: null,
     headerShown: false
-  };
-
-  handleCount = () => {
-    const { num } = this.state;
-    this.setState({
-      num: num + 1
-    });
   };
 
   handleLogin = () => {
@@ -43,16 +35,13 @@ class Login extends Component {
       username,
       password
     };
-
-    axios
-      .post(`${API_HOST}/auth/login`, body)
-      .then(response => {
-        if (response.status === 200) {
-          this.props.setDataLogin(response.data.data);
-          this.props.navigation.navigate('App');
-        }
+    this.setState({ loginLoading: true });
+    this.props
+      .dispatch(requestLogin(body))
+      .then(() => {
+        this.props.navigation.navigate('App');
       })
-      .catch(() => {
+      .catch(({ response }) => {
         this.setState({
           statusTextBox: {
             ...statusTextBox,
@@ -67,6 +56,11 @@ class Login extends Component {
           type: 'danger',
           duration: 5000
         });
+      })
+      .finally(() => {
+        this.setState({
+          loginLoading: false
+        });
       });
   };
 
@@ -78,7 +72,7 @@ class Login extends Component {
     this.setState({ [type]: text });
   };
   render() {
-    const { username, password, statusTextBox } = this.state;
+    const { username, password, statusTextBox, loginLoading } = this.state;
     return (
       <View style={styles.bgColorSet}>
         <View style={styles.container}>
@@ -105,11 +99,15 @@ class Login extends Component {
                 />
               </Item>
             </Form>
-            <TouchableOpacity onPress={this.handleLogin}>
-              <View style={styles.button}>
-                <Text style={styles.text}>Login</Text>
-              </View>
-            </TouchableOpacity>
+            {loginLoading ? (
+              <Spinner color="green" />
+            ) : (
+              <TouchableOpacity onPress={this.handleLogin}>
+                <View style={styles.button}>
+                  <Text style={styles.text}>Login</Text>
+                </View>
+              </TouchableOpacity>
+            )}
             <View style={styles.orText}>
               <Text>Or</Text>
             </View>
@@ -133,16 +131,16 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  setDataLogin: payload => {
-    dispatch({
-      type: 'POST_LOGIN_FULFILLED',
-      payload: payload
-    });
-  }
-});
+// const mapDispatchToProps = dispatch => ({
+//   setDataLogin: payload => {
+//     dispatch({
+//       type: 'POST_LOGIN_FULFILLED',
+//       payload: payload
+//     });
+//   }
+// });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect(mapStateToProps)(Login);
 
 const styles = StyleSheet.create({
   TextTitle: { alignSelf: 'center' },

@@ -16,13 +16,21 @@ const products = (state = initialState, action) => {
         message: 'Terjadi Kesalahan'
       };
     case 'GET_PRODUCTS_FULFILLED':
-      return {
-        ...state,
-        dataProducts: [
-          ...state.dataProducts,
-          ...action.payload.data.data.searchResult
-        ]
-      };
+      if (action.payload.data.data.searchResult.length) {
+        return {
+          ...state,
+          isLoading: true,
+          dataProducts: [
+            ...state.dataProducts,
+            ...action.payload.data.data.searchResult
+          ]
+        };
+      } else {
+        return {
+          ...state,
+          isLoading: false
+        };
+      }
     case 'EMPTY_PRODUCTS':
       return {
         ...state,

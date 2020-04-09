@@ -1,5 +1,13 @@
 import React, { Component } from 'react';
-import { View, FlatList, TouchableOpacity } from 'react-native';
+import {
+  View,
+  FlatList,
+  TouchableOpacity,
+  RefreshControl,
+  Toast,
+  ScrollView,
+  ActivityIndicator
+} from 'react-native';
 import NavbarNavigation from '../Components/NavbarNavigation';
 import CardProduct from '../Components/CardProduct';
 import {
@@ -13,7 +21,6 @@ import { Drawer, Button, Text } from 'native-base';
 import CategoryPicker from '../Components/CategoryPicker';
 import { addCart } from '../Public/redux/action/cart';
 import { getProfile } from '../Public/redux/action/users';
-import qs from 'qs';
 
 class Home extends Component {
   constructor(props) {
@@ -25,7 +32,9 @@ class Home extends Component {
       limit: '5',
       page: 0,
       product_name: '',
-      date: ''
+      date: '',
+      refresh: false,
+      lengthData: 0
     };
   }
 
@@ -145,7 +154,11 @@ class Home extends Component {
             date: date
           }
         };
-        this.props.dispatch(requestProducts(config));
+        this.props.dispatch(requestProducts(config)).then(({ value }) => {
+          this.setState({
+            lengthData: value.data.data.searchResult.length
+          });
+        });
       }
     );
   };
@@ -216,8 +229,50 @@ class Home extends Component {
     this.props.dispatch(addCart(item));
   };
 
+  // onRefresh = () => {
+  //   const { dispatch } = this.props;
+  //   this.setState({
+  //     refresh: true
+  //   });
+  //   const { auth } = this.props;
+  //   const { nameSearch, category_id, product_name, date } = this.props;
+  //   const headers = { authorization: auth.data.token };
+  //   const config = {
+  //     headers,
+  //     params: {
+  //       nameSearch: nameSearch,
+  //       category_id: category_id,
+  //       limit: '5',
+  //       page: 0,
+  //       product_name: product_name,
+  //       date: date
+  //     }
+  //   };
+  //   dispatch(emptyProducts());
+  //   dispatch(requestProducts(config))
+  //     .then(() => {
+  //       this.setState({
+  //         refresh: false
+  //       });
+  //     })
+  //     .catch(() => {
+  //       Toast.show({
+  //         text: 'No Internet Connection',
+  //         buttonText: 'Okay',
+  //         type: 'danger',
+  //         duration: 5000
+  //       });
+  //     })
+  //     .finally(() => {
+  //       this.setState({
+  //         refresh: false
+  //       });
+  //     });
+  // };
+
   render() {
     const { products } = this.props;
+    const { lengthData } = this.state;
     return (
       <Drawer
         ref={ref => {
@@ -231,32 +286,28 @@ class Home extends Component {
             draw={this.openDrawer.bind(this)}
             input={this.handleSearchByName.bind(this)}
           />
-          <Text style={{ alignSelf: 'center', padding: 8 }}>
+          <Text style={styles.headerTittle}>
             Wellcome, Please Choose What You Want !
           </Text>
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              marginHorizontal: 16
-            }}>
-            <Button
-              rounded
-              style={styles.buttonFilter}
-              onPress={() => this.handleSort('product_name')}>
-              <Text>Name</Text>
-            </Button>
-            <Button
-              rounded
-              style={styles.buttonFilter}
-              onPress={() => this.handleSort('updated_by')}>
-              <Text>Newest</Text>
-            </Button>
-            <CategoryPicker
-              {...this.props}
-              categoryPick={this.handleCategory.bind(this)}
-            />
+          <View style={styles.buttonHeader}>
+            <ScrollView horizontal={true}>
+              <Button
+                rounded
+                style={styles.buttonFilter}
+                onPress={() => this.handleSort('product_name')}>
+                <Text style={styles.fontBolder}>Name</Text>
+              </Button>
+              <Button
+                rounded
+                style={styles.buttonFilter}
+                onPress={() => this.handleSort('updated_by')}>
+                <Text style={styles.fontBolder}>Newest</Text>
+              </Button>
+              <CategoryPicker
+                {...this.props}
+                categoryPick={this.handleCategory.bind(this)}
+              />
+            </ScrollView>
           </View>
           <View style={styles.container}>
             <FlatList
@@ -280,6 +331,17 @@ class Home extends Component {
               }}
               onEndReached={this.handleNextPage}
               onEndReachedThreshold={0.1}
+              ListFooterComponent={
+                this.props.products.isLoading ? (
+                  <ActivityIndicator
+                    size="large"
+                    color="grey"
+                    style={styles.actIndicator}
+                  />
+                ) : (
+                  <Text />
+                )
+              }
             />
           </View>
         </View>
@@ -334,6 +396,19 @@ const styles = {
   buttonFilter: {
     padding: 4,
     backgroundColor: '#ff8000'
+  },
+  fontBolder: {
+    fontWeight: 'bold'
+  },
+  buttonHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    flexWrap: 'wrap',
+    marginHorizontal: 16
+  },
+  headerTittle: { alignSelf: 'center', padding: 8, fontWeight: 'bold' },
+  actIndicator: {
+    marginBottom: 20
   }
 };
 
