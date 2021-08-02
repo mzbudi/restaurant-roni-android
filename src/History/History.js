@@ -7,11 +7,6 @@ import { getHistory } from '../Public/redux/action/history';
 import Moment from 'moment';
 
 class History extends Component {
-  static navigationOptions = {
-    header: null,
-    headerShown: false
-  };
-
   componentDidMount() {
     const { auth } = this.props;
     const header = {

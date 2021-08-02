@@ -20,11 +20,6 @@ class Register extends Component {
     profile_picture: {}
   };
 
-  static navigationOptions = {
-    header: null,
-    headerShown: false
-  };
-
   handleChoosePhoto = () => {
     const options = {
       storageOptions: {

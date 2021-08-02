@@ -24,11 +24,6 @@ class Login extends Component {
     loginLoading: false
   };
 
-  static navigationOptions = {
-    header: null,
-    headerShown: false
-  };
-
   handleLogin = () => {
     const { username, password, statusTextBox } = this.state;
     const body = {

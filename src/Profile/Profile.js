@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { Container, Form, Item, Input, Label } from 'native-base';
+import { Container } from 'native-base';
 import { connect } from 'react-redux';
 import ProfileField from '../Components/ProfileField';
 import { API_HOST } from 'react-native-dotenv';
@@ -12,10 +12,6 @@ class Profile extends Component {
       username: 'roni'
     };
   }
-  static navigationOptions = {
-    header: null,
-    headerShown: false
-  };
 
   handleChangePassword = () => {
     this.props.navigation.navigate('ChangePassword');

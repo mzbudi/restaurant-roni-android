@@ -18,10 +18,6 @@ class ChangeProfile extends Component {
       message: ''
     };
   }
-  static navigationOptions = {
-    header: null,
-    headerShown: false
-  };
 
   componentDidMount() {
     const { auth } = this.props;

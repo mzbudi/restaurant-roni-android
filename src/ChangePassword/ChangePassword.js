@@ -14,10 +14,7 @@ class ChangePassword extends Component {
       visible: false
     };
   }
-  static navigationOptions = {
-    header: null,
-    headerShown: false
-  };
+
   handleInput = (text, type) => {
     this.setState({ [type]: text });
   };

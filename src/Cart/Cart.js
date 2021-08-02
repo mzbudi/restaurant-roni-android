@@ -20,10 +20,6 @@ class Cart extends Component {
       visible: false
     };
   }
-  static navigationOptions = {
-    header: null,
-    headerShown: false
-  };
 
   handleCloseModal = () => {
     this.setState({

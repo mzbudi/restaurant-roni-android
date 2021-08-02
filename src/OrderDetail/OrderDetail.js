@@ -6,11 +6,6 @@ import NavbarHistory from '../Components/NavbarHistory';
 import { getDetailHistory } from '../Public/redux/action/orderDetail';
 
 class OrderDetail extends Component {
-  static navigationOptions = {
-    header: null,
-    headerShown: false
-  };
-
   componentDidMount() {
     const { auth, navigation } = this.props;
     const header = {
