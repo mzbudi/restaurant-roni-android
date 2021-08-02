@@ -5,11 +5,9 @@ import { API_HOST } from 'react-native-dotenv';
 export const requestLogin = body => {
   return {
     type: 'POST_LOGIN',
-    payload: axios
-      .post(`${API_HOST}/auth/login`, qs.stringify(body))
-      .then(res => {
-        return res.data.data;
-      })
+    payload: axios.post(`${API_HOST}/auth/login`, body).then(res => {
+      return res.data.data;
+    })
   };
 };
 

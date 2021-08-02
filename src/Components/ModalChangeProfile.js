@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { View, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { Icon, Text, Toast } from 'native-base';
-import { changePassword, changeProfile } from '../Public/redux/action/users';
+import { changeProfile } from '../Public/redux/action/users';
 
 class ModalChangeProfile extends Component {
   handleClose() {
@@ -26,7 +26,7 @@ class ModalChangeProfile extends Component {
   handleChangeProfile = () => {
     const { auth, photo, name } = this.props;
     const header = {
-      headers: { authorization: auth.data.token }
+      headers: { authorization: `Bearer ${auth.data.token}` }
     };
 
     const user_id = auth.data.user_id;

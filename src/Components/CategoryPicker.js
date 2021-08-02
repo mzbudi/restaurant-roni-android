@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Content, Form, Item, Picker } from 'native-base';
-import { requestProducts } from '../Home/action';
 
 export default class CategoryPicker extends Component {
   constructor(props) {
@@ -32,18 +31,19 @@ export default class CategoryPicker extends Component {
           <Item picker>
             <Picker
               mode="dropdown"
-              style={{ width: 200 }}
+              style={{ ...{ width: 200 } }}
               placeholder="Select your SIM"
-              placeholderStyle={{ color: '#bfc6ea' }}
+              placeholderStyle={{ ...{ color: '#bfc6ea' } }}
               placeholderIconColor="#007aff"
               selectedValue={this.state.selected}
               onValueChange={value => {
                 this.onValueChange(value);
               }}>
-              <Picker.Item label="All" value="" />
+              <Picker.Item label="All" value="" key="all" />
               {category.dataCategory.map((item, index) => {
                 return (
                   <Picker.Item
+                    key={index}
                     label={item.category_name}
                     value={item.category_id}
                   />

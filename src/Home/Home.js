@@ -3,8 +3,6 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  RefreshControl,
-  Toast,
   ScrollView,
   ActivityIndicator
 } from 'react-native';
@@ -41,18 +39,17 @@ class Home extends Component {
   closeDrawer() {
     this._drawer._root.close();
   }
-  openDrawer() {
+  openDrawer = () => {
     this._drawer._root.open();
-  }
+  };
 
   static navigationOptions = {
-    header: null,
     headerShown: false
   };
 
   componentDidMount() {
     const { auth } = this.props;
-    const headers = { authorization: auth.data.token };
+    const headers = { authorization: `Bearer ${auth.data.token}` };
     const user_id = auth.data.user_id;
     const configCategory = {
       headers
@@ -86,7 +83,7 @@ class Home extends Component {
       },
       () => {
         const { auth } = this.props;
-        const headers = { authorization: auth.data.token };
+        const headers = { authorization: `Bearer ${auth.data.token}` };
         const config = {
           headers,
           params: {
@@ -116,7 +113,7 @@ class Home extends Component {
       },
       () => {
         const { auth } = this.props;
-        const headers = { authorization: auth.data.token };
+        const headers = { authorization: `Bearer ${auth.data.token}` };
         const config = {
           headers,
           params: {
@@ -142,7 +139,7 @@ class Home extends Component {
       },
       () => {
         const { auth } = this.props;
-        const headers = { authorization: auth.data.token };
+        const headers = { authorization: `Bearer ${auth.data.token}` };
         const config = {
           headers,
           params: {
@@ -165,7 +162,7 @@ class Home extends Component {
 
   handleSort = sorter => {
     const { auth } = this.props;
-    const headers = { authorization: auth.data.token };
+    const headers = { authorization: `Bearer ${auth.data.token}` };
 
     if (sorter === 'product_name') {
       this.setState(
@@ -272,7 +269,7 @@ class Home extends Component {
 
   render() {
     const { products } = this.props;
-    const { lengthData } = this.state;
+    // const { lengthData } = this.state;
     return (
       <Drawer
         ref={ref => {
@@ -283,7 +280,7 @@ class Home extends Component {
         <View style={styles.backgroundContainer}>
           <NavbarNavigation
             {...this.props}
-            draw={this.openDrawer.bind(this)}
+            draw={this.openDrawer}
             input={this.handleSearchByName.bind(this)}
           />
           <Text style={styles.headerTittle}>

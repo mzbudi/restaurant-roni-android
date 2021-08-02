@@ -27,7 +27,7 @@ class ModalChangePassword extends Component {
   handleChangePassword = () => {
     const { auth, newPassword, rePassword, oldPassword } = this.props;
     const header = {
-      headers: { authorization: auth.data.token }
+      headers: { authorization: `Bearer ${auth.data.token}` }
     };
 
     const user_id = auth.data.user_id;

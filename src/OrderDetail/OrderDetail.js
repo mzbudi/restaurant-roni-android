@@ -14,7 +14,7 @@ class OrderDetail extends Component {
   componentDidMount() {
     const { auth, navigation } = this.props;
     const header = {
-      headers: { authorization: auth.data.token }
+      headers: { authorization: `Bearer ${auth.data.token}` }
     };
 
     const id = navigation.state.params.item.order_id;

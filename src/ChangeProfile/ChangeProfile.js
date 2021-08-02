@@ -25,7 +25,7 @@ class ChangeProfile extends Component {
 
   componentDidMount() {
     const { auth } = this.props;
-    const headers = { authorization: auth.data.token };
+    const headers = { authorization: `Bearer ${auth.data.token}` };
     const user_id = auth.data.user_id;
     const configCategory = {
       headers
@@ -64,7 +64,7 @@ class ChangeProfile extends Component {
         duration: 5000
       });
       const { auth } = this.props;
-      const headers = { authorization: auth.data.token };
+      const headers = { authorization: `Bearer ${auth.data.token}` };
       const user_id = auth.data.user_id;
       const configCategory = {
         headers

@@ -26,7 +26,7 @@ class ModalCheckout extends Component {
   handleCheckout = () => {
     const { auth, cart } = this.props;
     const header = {
-      headers: { authorization: auth.data.token }
+      headers: { authorization: `Bearer ${auth.data.token}` }
     };
 
     const body = {

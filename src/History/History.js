@@ -15,7 +15,7 @@ class History extends Component {
   componentDidMount() {
     const { auth } = this.props;
     const header = {
-      headers: { authorization: auth.data.token }
+      headers: { authorization: `Bearer ${auth.data.token}` }
     };
 
     const id = auth.data.user_id;
