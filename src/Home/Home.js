@@ -20,6 +20,15 @@ import CategoryPicker from '../Components/CategoryPicker';
 import { addCart } from '../Public/redux/action/cart';
 import { getProfile } from '../Public/redux/action/users';
 
+const defaultState = {
+  nameSearch: '',
+  category_id: '',
+  limit: '6',
+  page: 0,
+  product_name: '',
+  date: ''
+};
+
 class Home extends Component {
   constructor(props) {
     super(props);
@@ -27,7 +36,7 @@ class Home extends Component {
       dataProducts: [],
       nameSearch: '',
       category_id: '',
-      limit: '5',
+      limit: '6',
       page: 0,
       product_name: '',
       date: '',
@@ -57,12 +66,8 @@ class Home extends Component {
     const config = {
       headers,
       params: {
-        nameSearch: '',
-        category_id: '',
-        limit: '5',
-        page: 0,
-        product_name: '',
-        date: ''
+        ...defaultState,
+        nameSearch: ''
       }
     };
     this.props.dispatch(getProfile(user_id, configCategory));
@@ -74,12 +79,8 @@ class Home extends Component {
   handleSearchByName = text => {
     this.setState(
       {
-        nameSearch: text,
-        category_id: '',
-        limit: '5',
-        page: 0,
-        product_name: '',
-        date: ''
+        ...defaultState,
+        nameSearch: text
       },
       () => {
         const { auth } = this.props;
@@ -87,12 +88,8 @@ class Home extends Component {
         const config = {
           headers,
           params: {
-            nameSearch: text,
-            category_id: '',
-            limit: '5',
-            page: 0,
-            product_name: '',
-            date: ''
+            ...defaultState,
+            nameSearch: text
           }
         };
         this.props.dispatch(emptyProducts());
@@ -104,12 +101,7 @@ class Home extends Component {
   handleCategory = id => {
     this.setState(
       {
-        nameSearch: '',
-        category_id: id,
-        limit: '5',
-        page: 0,
-        product_name: '',
-        date: ''
+        ...defaultState
       },
       () => {
         const { auth } = this.props;
@@ -117,12 +109,8 @@ class Home extends Component {
         const config = {
           headers,
           params: {
-            nameSearch: '',
-            category_id: id,
-            limit: '5',
-            page: 0,
-            product_name: '',
-            date: ''
+            ...defaultState,
+            category_id: id
           }
         };
         this.props.dispatch(emptyProducts());
@@ -145,7 +133,7 @@ class Home extends Component {
           params: {
             nameSearch: nameSearch,
             category_id: category_id,
-            limit: '5',
+            limit: '6',
             page: this.state.page,
             product_name: product_name,
             date: date
@@ -167,23 +155,15 @@ class Home extends Component {
     if (sorter === 'product_name') {
       this.setState(
         {
-          nameSearch: '',
-          category_id: '',
-          limit: '5',
-          page: 0,
-          product_name: sorter,
-          date: ''
+          ...defaultState,
+          product_name: sorter
         },
         () => {
           const config = {
             headers,
             params: {
-              nameSearch: '',
-              category_id: '',
-              limit: '5',
-              page: 0,
-              product_name: sorter,
-              date: ''
+              ...defaultState,
+              product_name: sorter
             }
           };
           this.sortData(config);
@@ -192,22 +172,14 @@ class Home extends Component {
     } else {
       this.setState(
         {
-          nameSearch: '',
-          category_id: '',
-          limit: '5',
-          page: 0,
-          product_name: '',
+          ...defaultState,
           date: sorter
         },
         () => {
           const config = {
             headers,
             params: {
-              nameSearch: '',
-              category_id: '',
-              limit: '5',
-              page: 0,
-              product_name: '',
+              ...defaultState,
               date: sorter
             }
           };
@@ -225,47 +197,6 @@ class Home extends Component {
   addToCart = item => {
     this.props.dispatch(addCart(item));
   };
-
-  // onRefresh = () => {
-  //   const { dispatch } = this.props;
-  //   this.setState({
-  //     refresh: true
-  //   });
-  //   const { auth } = this.props;
-  //   const { nameSearch, category_id, product_name, date } = this.props;
-  //   const headers = { authorization: auth.data.token };
-  //   const config = {
-  //     headers,
-  //     params: {
-  //       nameSearch: nameSearch,
-  //       category_id: category_id,
-  //       limit: '5',
-  //       page: 0,
-  //       product_name: product_name,
-  //       date: date
-  //     }
-  //   };
-  //   dispatch(emptyProducts());
-  //   dispatch(requestProducts(config))
-  //     .then(() => {
-  //       this.setState({
-  //         refresh: false
-  //       });
-  //     })
-  //     .catch(() => {
-  //       Toast.show({
-  //         text: 'No Internet Connection',
-  //         buttonText: 'Okay',
-  //         type: 'danger',
-  //         duration: 5000
-  //       });
-  //     })
-  //     .finally(() => {
-  //       this.setState({
-  //         refresh: false
-  //       });
-  //     });
-  // };
 
   render() {
     const { products } = this.props;
@@ -315,6 +246,7 @@ class Home extends Component {
               renderItem={({ item, index }) => {
                 return (
                   <TouchableOpacity
+                    key={index}
                     onPress={() => {
                       this.addToCart(item);
                     }}>
@@ -327,9 +259,9 @@ class Home extends Component {
                 );
               }}
               onEndReached={this.handleNextPage}
-              onEndReachedThreshold={0.1}
+              onEndReachedThreshold={0.01}
               ListFooterComponent={
-                this.props.products.isLoading ? (
+                products.isLoading ? (
                   <ActivityIndicator
                     size="large"
                     color="grey"
