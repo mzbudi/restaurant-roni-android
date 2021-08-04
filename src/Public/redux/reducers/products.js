@@ -8,18 +8,20 @@ const products = (state = initialState, action) => {
   switch (action.type) {
     case 'GET_PRODUCTS_PENDING':
       return {
-        ...state
+        ...state,
+        isLoading: true
       };
     case 'GET_PRODUCTS_REJECTED':
       return {
         ...state,
+        isLoading: true,
         message: 'Terjadi Kesalahan'
       };
     case 'GET_PRODUCTS_FULFILLED':
       if (action.payload.data.data.searchResult.length) {
         return {
           ...state,
-          isLoading: true,
+          isLoading: false,
           dataProducts: [
             ...state.dataProducts,
             ...action.payload.data.data.searchResult

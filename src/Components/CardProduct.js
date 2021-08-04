@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { View, Image, Text } from 'react-native';
+import { Image, Text, Dimensions, View } from 'react-native';
 import { API_HOST } from 'react-native-dotenv';
 import { formatRupiah } from '../Public/helper/parseRupiah';
+import { Card, CardItem } from 'native-base';
 
 class CardProduct extends Component {
   render() {
@@ -9,42 +10,36 @@ class CardProduct extends Component {
     const product_image_fixed =
       `${API_HOST}` + product_image.replace('assets', '');
     return (
-      <View style={styles.card}>
-        <Image
-          style={styles.image}
-          source={{
-            uri: product_image_fixed
-          }}
-        />
-        <View style={styles.bottomCardText}>
-          <Text style={styles.textName}>{product_name}</Text>
-          <Text style={styles.textPrice}>
-            {formatRupiah(product_price, 'Rp. ')}
-          </Text>
-        </View>
-      </View>
+      <Card style={styles.card}>
+        <CardItem cardBody>
+          <Image
+            style={styles.image}
+            source={{
+              uri: product_image_fixed
+            }}
+          />
+        </CardItem>
+        <CardItem bordered>
+          <View>
+            <Text style={styles.textName}>{product_name}</Text>
+            <Text>{formatRupiah(product_price, 'Rp. ')}</Text>
+          </View>
+        </CardItem>
+      </Card>
     );
   }
 }
 
 const styles = {
   card: {
-    backgroundColor: 'white',
-    elevation: 15,
+    flex: 1,
+    width: Dimensions.get('window').width / 2.2,
     margin: 8,
-    borderRadius: 8,
-    marginBottom: 8,
-    width: 150
+    borderRadius: 40
   },
-  image: {
-    height: 120,
-    width: 150,
-    borderTopLeftRadius: 8,
-    borderTopRightRadius: 8
-  },
-  bottomCardText: { marginLeft: 8 },
-  textName: { fontSize: 16, padding: 4, fontWeight: 'bold' },
-  textPrice: { fontSize: 14, padding: 4, fontWeight: 'bold' }
+  image: { width: '100%', height: 100 },
+  textName: { fontWeight: 'bold' },
+  textPrice: { fontWeight: 'bold' }
 };
 
 export default CardProduct;

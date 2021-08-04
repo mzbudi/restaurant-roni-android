@@ -23,7 +23,7 @@ import { getProfile } from '../Public/redux/action/users';
 const defaultState = {
   nameSearch: '',
   category_id: '',
-  limit: '6',
+  limit: '8',
   page: 0,
   product_name: '',
   date: ''
@@ -34,12 +34,7 @@ class Home extends Component {
     super(props);
     this.state = {
       dataProducts: [],
-      nameSearch: '',
-      category_id: '',
-      limit: '6',
-      page: 0,
-      product_name: '',
-      date: '',
+      ...defaultState,
       refresh: false,
       lengthData: 0
     };
@@ -99,6 +94,7 @@ class Home extends Component {
   };
 
   handleCategory = id => {
+    // const { dispatch } = this.props;
     this.setState(
       {
         ...defaultState
@@ -131,9 +127,9 @@ class Home extends Component {
         const config = {
           headers,
           params: {
+            ...defaultState,
             nameSearch: nameSearch,
             category_id: category_id,
-            limit: '6',
             page: this.state.page,
             product_name: product_name,
             date: date
@@ -267,9 +263,7 @@ class Home extends Component {
                     color="grey"
                     style={styles.actIndicator}
                   />
-                ) : (
-                  <Text />
-                )
+                ) : null
               }
             />
           </View>
@@ -307,7 +301,8 @@ const styles = {
     fontSize: 14
   },
   container: {
-    padding: 16
+    padding: 16,
+    marginBottom: 16
   },
   imageProfile: {
     height: 50,
